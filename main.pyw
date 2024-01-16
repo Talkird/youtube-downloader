@@ -1,27 +1,24 @@
-from components.titlebar import TitleBar
 from CTkMessagebox import CTkMessagebox
 from tkinter import filedialog
 import customtkinter as ctk
 import threading
 import pytube
 import theme
-
+    
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.__title = "Youtube Downloader"
         self.geometry("400x450")
         self.resizable(False, False)
-        self.attributes('-topmost', True)
+        self.attributes('-topmost', False)
         self.attributes('-alpha', 1)
-        self.overrideredirect(True)
         self.title(self.__title)
 
         self.init_widgets()
         self.add_widgets()
 
     def init_widgets(self) -> None:
-        self.titlebar = TitleBar(master=self, title=self.__title)
         self.label_title = ctk.CTkLabel(master=self, text="Youtube Downloader", font=theme.font_title)
         self.text_area = ctk.CTkTextbox(master=self, font=theme.font_small)
         self.text_area.bind("<<Paste>>", self.on_paste) 
@@ -67,6 +64,7 @@ class App(ctk.CTk):
     def on_paste(self, event) -> None:
         self.text_area.after(1, lambda: self.text_area.insert("insert", "\n"))
 
+    #TODO Fix progress
     def on_progress(self, stream, chunk, remaining) -> None:
         size = stream.filesize
         downloaded = size - remaining
