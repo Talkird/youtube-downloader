@@ -41,7 +41,6 @@ class App(ctk.CTk):
         threading.Thread(target=self.download, args=(dir, links)).start()
 
     def download(self, dir, links) -> None:
-        self.history = open("download_history.txt", "a")
 
         for idx, link in enumerate(links, start=1):
             try:
@@ -52,7 +51,6 @@ class App(ctk.CTk):
 
                 self.label_progress.configure(text=f"Downloading {idx}/{len(links)}")
                 stream.download(dir)
-                self.download_history_file.write(f"{link}\n")
 
             except Exception as e: 
                 print(f"Error downloading {link}: {e}")
@@ -74,7 +72,6 @@ class App(ctk.CTk):
         self.label_progress.configure(text="Finished")
         self.combo_download_option.configure(state="normal")
         self.text_area.delete("1.0", "end-1c") 
-        self.history.close()
 
 if __name__ == "__main__":
     app = App()
