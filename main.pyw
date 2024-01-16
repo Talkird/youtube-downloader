@@ -79,10 +79,6 @@ class App(ctk.CTk):
         self.combo_download_option.configure(state="normal")
         self.text_area.delete("1.0", "end-1c") 
 
-    def get_geometry(self) -> str:
-        width, height = map(int, self.geometry().split('x'))
-        return f"{width}x{height}"
-
 if __name__ == "__main__":
     ctk.set_default_color_theme("green")
     app = App()
