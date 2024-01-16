@@ -1,28 +1,35 @@
+from components.titlebar import TitleBar
 from CTkMessagebox import CTkMessagebox
 from tkinter import filedialog
 import customtkinter as ctk
 import threading
 import pytube
+import theme
 
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.geometry("400x400")
+        self.__title = "Youtube Downloader"
+        self.geometry("400x450")
         self.resizable(False, False)
-        self.title("Youtube Downloader")
+        self.attributes('-topmost', True)
+        self.attributes('-alpha', 1)
+        self.overrideredirect(True)
+        self.title(self.__title)
 
         self.init_widgets()
         self.add_widgets()
 
     def init_widgets(self) -> None:
-        self.label_title = ctk.CTkLabel(master=self, text="Youtube Downloader", font=("Roboto", 30))
-        self.text_area = ctk.CTkTextbox(master=self, font=("Roboto", 14))
+        self.titlebar = TitleBar(master=self, title=self.__title)
+        self.label_title = ctk.CTkLabel(master=self, text="Youtube Downloader", font=theme.font_title)
+        self.text_area = ctk.CTkTextbox(master=self, font=theme.font_small)
         self.text_area.bind("<<Paste>>", self.on_paste) 
-        self.combo_download_option = ctk.CTkComboBox(master=self, font=("Roboto", 16), values=["Video", "Audio"])
-        self.button_convert = ctk.CTkButton(master=self, text="Convert", font=("Roboto", 16), command=self.start_download_thread)
-        self.label_progress = ctk.CTkLabel(master=self, text="", font=("Roboto", 16))
-        self.progress_bar = ctk.CTkProgressBar(master=self)
-        self.progress_bar.set(-1)
+        self.combo_download_option = ctk.CTkComboBox(master=self, font=theme.font, values=["Video", "Audio"])
+        self.button_convert = ctk.CTkButton(master=self, text="Convert", font=theme.font, fg_color=theme.accent, hover_color=theme.accent_hover, command=self.start_download_thread)
+        self.label_progress = ctk.CTkLabel(master=self, text="", font=theme.font)
+        self.progress_bar = ctk.CTkProgressBar(master=self, progress_color=theme.accent)
+        self.progress_bar.set(0)
 
     def add_widgets(self) -> None:
         self.label_title.pack(padx=15, pady=5)
@@ -37,7 +44,6 @@ class App(ctk.CTk):
         links = [line for line in self.text_area.get("1.0", "end-1c").split('\n') if line.strip()]
         self.label_progress.configure(text="Starting...")
         self.combo_download_option.configure(state="disabled")
-        self.progress_bar.set(0)
         threading.Thread(target=self.download, args=(dir, links)).start()
 
     def download(self, dir, links) -> None:
@@ -73,6 +79,11 @@ class App(ctk.CTk):
         self.combo_download_option.configure(state="normal")
         self.text_area.delete("1.0", "end-1c") 
 
+    def get_geometry(self) -> str:
+        width, height = map(int, self.geometry().split('x'))
+        return f"{width}x{height}"
+
 if __name__ == "__main__":
+    ctk.set_default_color_theme("green")
     app = App()
     app.mainloop()
